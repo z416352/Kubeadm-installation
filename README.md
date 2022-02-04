@@ -156,7 +156,7 @@ sudo apt-get install -y kubelet=${K_VER} kubectl=${K_VER} kubeadm=${K_VER}
 
 # Master端
 
-1. 要看一下最後init後有沒有warning
+1. 初始化master端的參數，這段主要是設定kubernetes後面一些元件可以使用的IP範圍，要注意最後有沒有出現warning
     ```sh
     # 跳過這段
     # export KUBECONFIG=/etc/kubernetes/admin.conf
