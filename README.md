@@ -194,7 +194,7 @@ sudo apt-get install -y kubelet=${K_VER} kubectl=${K_VER} kubeadm=${K_VER}
     sudo kubectl get nodes
     ```
 
-    - 如果一直顯示"Not Ready"，執行下面那行後重制，直接重做[Master](https://github.com/z416352/Kubeadm-installation/ "Master端")的部分
+    - 如果一直顯示"Not Ready"，執行下面那行後重制，直接重做[Master](https://github.com/z416352/Kubeadm-installation#master端)的部分
 
         ```
         sudo kubeadm reset
