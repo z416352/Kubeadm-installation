@@ -118,6 +118,8 @@ sudo apt-get update
 sudo apt-get install -y kubelet kubeadm kubectl
 sudo apt-mark hold kubelet kubeadm kubectl
 
+OR
+
 # 指定安裝版本
 ## 找到可用的版本 
 apt-cache madison kubeadm
