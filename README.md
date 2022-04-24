@@ -28,6 +28,13 @@ kubeadm token create <generation_token> --print-join-command --ttl=0
 
 
 # Master & worker node 都需要做一遍
+## 更新與安裝
+```
+sudo apt update
+sudo apt upgrade
+sudo apt install vim net-tools -y
+```
+
 
 ## 網路設定
 
