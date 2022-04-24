@@ -212,7 +212,7 @@ sudo apt-get install -y kubelet=${K_VER} kubectl=${K_VER} kubeadm=${K_VER}
 6. 把先前master複製的指令“kubeadm join  –token…..”在worker node執行
 
     ```
-    kubeadm join <master_IP:6443> --token.....
+    sudo kubeadm join <master_IP:6443> --token.....
     ```
 
 7. master端執行，看有沒有出現node的資訊
@@ -230,7 +230,7 @@ sudo apt-get install -y kubelet=${K_VER} kubectl=${K_VER} kubeadm=${K_VER}
     - 如果出現Unhealthy，到/etc/kubernetes/manifests，將kube-controller-manager.yaml和kube-scheduler.yaml中的 –port=0 註解後重新用執行
 
         ```
-        sudo systemctl restart kubelet
+        sudo systemctl restart kubelet.service
         ```
 
 ## Metrics Server
