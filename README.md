@@ -1,11 +1,16 @@
 # Kubeadm-installation
 
 ## 安裝環境
-- ubuntu 18.04
-
+- VM : 
+  - software : VMware
+  - memory : 4G
+  - OS : ubuntu 18.04 desktop
+- Host :
+  - OS : Win10
+- Kubernetes version = "1.21.3-00"
 ## 特殊情況
 
-💡 如果重開機有問題，操作完需要等一下
+💡 如果重開機有問題，操作完需要等一下，我通常用上面那個，master、worker node都需要執行，過一段時間在master端 "kubectl get nodes" 看是否成功 Ready
 
 ```
 sudo swapoff -a
@@ -18,8 +23,7 @@ sudo systemctl daemon-reload
 sudo systemctl restart kubelet
 ```
 
-
-💡 如果忘記Master 的 join token
+💡 如果忘記Master 的 join token，也可以直接 "kubeadm reset" 後重跑 initial 一次產生新的 token
 
 ```
 kubeadm token generate
@@ -27,12 +31,12 @@ kubeadm token create <generation_token> --print-join-command --ttl=0
 ```
 
 
-# Master & worker node 都需要做一遍
+# Master & worker node 都須作設定
 ## 更新與安裝
 ```
 sudo apt update
 sudo apt upgrade
-sudo apt install vim net-tools -y
+sudo apt install vim net-tools wget -y
 ```
 
 
@@ -53,7 +57,7 @@ sudo apt install vim net-tools -y
     sudo hostnamectl set-hostname <name>
     ```
     
-3. 編輯hosts檔案
+3. 編輯hosts檔案，可使用vim或是自己熟悉的編輯軟體
     
     ```
     sudo vim /etc/hosts
@@ -93,7 +97,7 @@ sudo apt install vim net-tools -y
 ## 安裝kubeadm、kubelet 和 kubectl
 
 ```
-sudo apt-get update && sudo apt-get install -y apt-transport-https curl vim
+sudo apt-get update && sudo apt-get install -y apt-transport-https curl
 ```
 
 ```docker
@@ -101,6 +105,7 @@ curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add
 
 OR
 
+# 執行上面那個
 # sudo curl -fsSLo /usr/share/keyrings/kubernetes-archive-keyring.gpg https://packages.cloud.google.com/apt/doc/apt-key.gpg
 ```
 
@@ -111,6 +116,7 @@ EOF
 
 OR
 
+# 執行上面那個
 # echo "deb [signed-by=/usr/share/keyrings/kubernetes-archive-keyring.gpg] https://apt.kubernetes.io/ kubernetes-xenial main" | sudo tee /etc/apt/sources.list.d/kubernetes.list
 ```
 
@@ -119,6 +125,8 @@ sudo apt-get update
 ```
 
 ## 安裝 kubelet、kubeadm、kubectl
+
+我這邊是選擇安裝指定版本 "1.21.3-00"，如果要安裝新版本有些地方可能會需要大幅度修改，但我使用 "1.21.3-00" 版本跑後面的步驟是可以安裝成功的，新版本目前沒測試過。
 
 ```sh
 # 安裝最新版本
@@ -172,54 +180,63 @@ sudo apt-get install -y kubelet=${K_VER} kubectl=${K_VER} kubeadm=${K_VER}
     # sudo systemctl daemon-reload
     # sudo systemctl restart kubelet
 
+    # 執行下面這個
     sudo kubeadm init   --pod-network-cidr=10.244.0.0/16 --service-cidr=10.245.0.0/16 --apiserver-advertise-address=<master_IP>
     ```
 
 2. 最後應該會出現successfully的提示，還有後面的指令kubeadm join…要記錄起來，之後worker node才能透過那個token加入叢集中
 
 3. 查看節點
-    ```
+
+    避免出現 “The connection to the server localhost:8080 was refused - did you specify the right host or port?”，這段在 init 的時候會有提示要執行
+
+    ```sh
+    mkdir -p $HOME/.kube
+    sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+    sudo chown $(id -u):$(id -g) $HOME/.kube/config
+    ``` 
+    
+    查看節點與狀態
+
+    ```sh
     sudo systemctl status kubelet
     sudo kubectl get nodes
     ```
 
-    - 如果出現“The connection to the server localhost:8080 was refused - did you specify the right host or port?”用下面這串，沒出現可以跳過
-
-        ```
-        mkdir -p $HOME/.kube
-        sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
-        sudo chown $(id -u):$(id -g) $HOME/.kube/config
-        ```
-
-4. 這邊選擇flannel 也可以選擇其他的網路附加元件
-
+4. 這邊選擇 flannel 元件，也可以選擇其他的網路附加元件，如下圖，如果馬上讀取 node 狀態可能還是會 NotReady 狀態
     ```
     sudo kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
     ```
+    ![2.png](./asset/2.PNG)
 
-5. 需要等待一段時間(3-5 mins)，查看node列表
+5. 需要等待一段時間(3-5 mins)，查看node列表，如果正常就會看到 master 是 Ready 狀態，並且所有的 pods 都會是在 Running 狀態。
 
     ```
     sudo kubectl get nodes
     ```
 
-    - 如果一直顯示"Not Ready"，執行下面那行後重制，直接重做[Master](https://github.com/z416352/Kubeadm-installation#master端)的部分
+    - 如果一直顯示"Not Ready"，執行下面那行後重置，直接重做[Master](https://github.com/z416352/Kubeadm-installation#master端)的部分
 
         ```
         sudo kubeadm reset
         ```
+    
+    ![3.png](./asset/3.PNG)
 
-6. 把先前master複製的指令“kubeadm join  –token…..”在worker node執行
+
+6. 把先前 master 複製的指令 “kubeadm join  –token…..”在 worker node 執行
 
     ```
     sudo kubeadm join <master_IP:6443> --token.....
     ```
 
-7. master端執行，看有沒有出現node的資訊
+7. master 端執行，看有沒有出現 worker node 的資訊，並且 Ready，同樣可能會需要幾分鐘。
 
     ```
     sudo kubectl get nodes
     ```
+
+    ![4.png](./asset/4.PNG)
 
 8. 檢查componentstatuses狀態
 
@@ -235,9 +252,30 @@ sudo apt-get install -y kubelet=${K_VER} kubectl=${K_VER} kubeadm=${K_VER}
 
 ## Metrics Server
 
+[Metrics Server 參考網址](https://github.com/kubernetes-sigs/metrics-server#readme)
+
+如果需要使用Auto Scaling的話就必須要安裝一個可以監控pods、nodes等等所消耗的CPU、Memory量，這邊我使用Metrics Server來監控資源使用量。
+
+如果沒有安裝，那建立的 hpa 可能都會是下圖這個狀態。安裝成功後 Targets 就會正常的顯示。hpa如何建立可以看下節的 Auto Scaling 參考網址
+
+![5.png](./asset/5.PNG)
+
+![6.png](./asset/6.PNG)
+
+我使用k8s "1.21.3-00"版本，需要把Metrics Server網站提供的yaml檔案下載下來(可透過linux的"wget"指令)，將原本的參數註解之後改成這下面這兩個，如下圖 :
 ```bash
+# 新增以下參數並註解掉原本的
 - --kubelet-preferred-address-types=InternalIP
 - --kubelet-insecure-tls
-
-https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale-walkthrough/
 ```
+![9.png](./asset/9.PNG)
+
+## Auto Scaling
+[Auto Scaling 實作參考網址](https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale-walkthrough/)
+
+當成功的時候可以看到下圖，當不斷訪問我們我們建立的pod時，TARGETS的使用率就會不斷的飆升，當達到設定的50%時就會開始不斷scaling pod來達到分散流量的目的。
+
+第二張圖片就是經過一段時間之後就多複製了4個pods，可以看到他們所產生的時間只有22h那個是最初的那個，其他的pods都是新建立的。
+
+![8.png](./asset/8.PNG)
+![7.png](./asset/7.PNG)
