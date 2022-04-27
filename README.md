@@ -8,7 +8,7 @@
 - Host :
   - OS : Win10
 - Kubernetes version = "1.21.3-00"
-## 特殊情況
+## 特殊情況 (過程有問題再看)
 
 💡 如果重開機有問題，操作完需要等一下，我通常用上面那個，master、worker node都需要執行，過一段時間在master端 "kubectl get nodes" 看是否成功 Ready
 
@@ -29,6 +29,13 @@ sudo systemctl restart kubelet
 kubeadm token generate
 kubeadm token create <generation_token> --print-join-command --ttl=0
 ```
+
+💡 如果在 init 的時候出現下圖 WARNING 的問題，可以參考下面的連結解決，主要應該是 docker driver 設定的問題
+
+[參考連結](https://cloud.tencent.com/developer/article/1815028)
+
+![10.png](./asset/10.PNG)
+
 
 
 # Master & worker node 都須作設定
@@ -173,7 +180,7 @@ sudo apt-get install -y kubelet=${K_VER} kubectl=${K_VER} kubeadm=${K_VER}
 
 # Master端
 
-1. 初始化master端的參數，這段主要是設定kubernetes後面一些元件可以使用的IP範圍，要注意最後有沒有出現warning
+1. 初始化master端的參數，這段主要是設定kubernetes後面一些元件可以使用的IP範圍，要注意最後有沒有出現 warning，這邊如果出現問題的話可以到上面的 "特殊情況" 第三點看看是不是一樣的問題
     ```sh
     # 跳過這段
     # export KUBECONFIG=/etc/kubernetes/admin.conf
@@ -225,7 +232,7 @@ sudo apt-get install -y kubelet=${K_VER} kubectl=${K_VER} kubeadm=${K_VER}
 
 
 6. 把先前 master 複製的指令 “kubeadm join  –token…..”在 worker node 執行
-
+，這邊如果出現問題的話可以到上面的 "特殊情況" 第三點看看是不是一樣的問題
     ```
     sudo kubeadm join <master_IP:6443> --token.....
     ```
@@ -244,7 +251,7 @@ sudo apt-get install -y kubelet=${K_VER} kubectl=${K_VER} kubeadm=${K_VER}
     sudo kubectl get cs
     ```
 
-    - 如果出現Unhealthy，到/etc/kubernetes/manifests，將kube-controller-manager.yaml和kube-scheduler.yaml中的 –port=0 註解後重新用執行
+    - 如果出現Unhealthy，cd 到/etc/kubernetes/manifests資料夾中，將 kube-controller-manager.yaml 和 kube-scheduler.yaml 這兩個檔案中的 –port=0 註解後重新執行
 
         ```
         sudo systemctl restart kubelet.service
