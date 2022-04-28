@@ -33,8 +33,12 @@ kubeadm token create <generation_token> --print-join-command --ttl=0
 💡 如果在 init 的時候出現下圖 WARNING 的問題，可以參考下面的連結解決，主要應該是 docker driver 設定的問題
 
 [參考連結](https://cloud.tencent.com/developer/article/1815028)
+```
+CentOS -> /usr/lib/systemd/system/docker.service
+Ubuntu -> /lib/systemd/system/docker.service
+```
 
-![10.png](./asset/10.PNG)
+![10.png](./asset/10.png)
 
 
 
