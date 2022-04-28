@@ -2,8 +2,9 @@
 
 ## 安裝環境
 - VM : 
+  - 使用了兩台VM，一台當master、一台當worker node
   - software : VMware
-  - memory : 4G
+  - memory : 4GB
   - OS : ubuntu 18.04 desktop
 - Host :
   - OS : Win10
