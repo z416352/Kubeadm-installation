@@ -268,7 +268,7 @@ sudo apt-get install -y kubelet=${K_VER} kubectl=${K_VER} kubeadm=${K_VER}
 
 如果需要使用Auto Scaling的話就必須要安裝一個可以監控pods、nodes等等所消耗的CPU、Memory量，這邊我使用Metrics Server來監控資源使用量。
 
-我使用k8s "1.21.3-00"版本，需要把Metrics Server網站提供的yaml檔案下載下來(可透過linux的"wget"指令)，將原本的參數註解之後改成這下面這兩個，如下圖 :
+我使用k8s "1.21.3-00"版本，需要把Metrics Server網站提供的yaml檔案下載下來(可透過linux的"wget"指令)，將原本的參數註解之後改成這下面這兩個，如下圖。修改完成後再部屬到kubernetes上。
 ```bash
 # 新增以下參數並註解掉原本的
 - --kubelet-preferred-address-types=InternalIP
@@ -276,7 +276,7 @@ sudo apt-get install -y kubelet=${K_VER} kubectl=${K_VER} kubeadm=${K_VER}
 ```
 ![9.png](./asset/9.PNG)
 
-如果沒有安裝，那建立的 hpa 可能都會是下圖這個狀態。安裝成功後 Targets 就會正常的顯示。hpa如何建立可以看下節的 Auto Scaling 參考網址
+如果沒有安裝，那建立的 hpa 可能都會是下圖這個狀態。安裝成功後 Targets 就會正常的顯示。hpa如何建立可以看下節的 Auto Scaling 參考網址。
 
 ![5.png](./asset/5.PNG)
 
