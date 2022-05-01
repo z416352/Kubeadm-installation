@@ -4,6 +4,7 @@
 - VM : 
   - 使用了兩台VM，一台當master、一台當worker node
   - software : VMware
+  - 2 CPU cores
   - memory : 4GB
   - OS : ubuntu 18.04 desktop
 - Host :
