@@ -295,3 +295,7 @@ sudo apt-get install -y kubelet=${K_VER} kubectl=${K_VER} kubeadm=${K_VER}
 
 ![8.png](./asset/8.PNG)
 ![7.png](./asset/7.PNG)
+
+可以看到當 Target 下降之後，多創建出來的 pod 就會慢慢刪除掉，到最後只會維持只有一個 pod 持續服務而已。 (過程需要等大約3-5分鐘)
+
+![11.png](./asset/11.png)
