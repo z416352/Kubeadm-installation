@@ -2,6 +2,7 @@
 
 ## 安裝環境
 - VM : 
+  - 建議使用VMWare，使用Virtual Box有時候會有一些問題
   - 使用了兩台VM，一台當master、一台當worker node
   - software : VMware
   - 2 CPU cores
