@@ -138,28 +138,6 @@ OR
 sudo apt-get update
 ```
 
-## 安裝 kubelet、kubeadm、kubectl
-
-我這邊是選擇安裝指定版本 "1.21.3-00"，如果要安裝新版本有些地方可能會需要大幅度修改，但我使用 "1.21.3-00" 版本跑後面的步驟是可以安裝成功的，新版本目前沒測試過。
-
-```sh
-# 安裝最新版本
-sudo apt-get install -y kubelet kubeadm kubectl
-sudo apt-mark hold kubelet kubeadm kubectl
-
-OR
-
-# 指定安裝版本
-## 找到可用的版本 
-apt-cache madison kubeadm
-
-## 指定版本
-K_VER="<version>"
-## ex : K_VER="1.21.3-00"
-
-sudo apt-get install -y kubelet=${K_VER} kubectl=${K_VER} kubeadm=${K_VER}
-```
-
 
 ## 修改docker文件
 
@@ -182,6 +160,30 @@ sudo apt-get install -y kubelet=${K_VER} kubectl=${K_VER} kubeadm=${K_VER}
     sudo systemctl restart docker
     sudo systemctl status docker
     ```
+    
+
+## 安裝 kubelet、kubeadm、kubectl
+
+我這邊是選擇安裝指定版本 "1.21.3-00"，如果要安裝新版本有些地方可能會需要大幅度修改，但我使用 "1.21.3-00" 版本跑後面的步驟是可以安裝成功的，新版本目前沒測試過。
+
+```sh
+# 安裝最新版本
+sudo apt-get install -y kubelet kubeadm kubectl
+sudo apt-mark hold kubelet kubeadm kubectl
+
+OR
+
+# 指定安裝版本
+## 找到可用的版本 
+apt-cache madison kubeadm
+
+## 指定版本
+K_VER="<version>"
+## ex : K_VER="1.21.3-00"
+
+sudo apt-get install -y kubelet=${K_VER} kubectl=${K_VER} kubeadm=${K_VER}
+```
+
 
 </aside>
 
