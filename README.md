@@ -48,8 +48,8 @@ Ubuntu -> /lib/systemd/system/docker.service
 # Master & worker node 都須作設定
 ## 更新與安裝
 ```
-sudo apt update
-sudo apt upgrade
+sudo apt update -y
+sudo apt upgrade -y
 sudo apt install vim net-tools wget -y
 ```
 
