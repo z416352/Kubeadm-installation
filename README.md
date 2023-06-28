@@ -1,5 +1,6 @@
 # Kubeadm-installation
 
+[Kubernetes(v1.26.0) on GCP](https://z416352.github.io/posts/dev/2023/02/kubernetes_tutorial_gcp/kubernetes_tutorial_gcp/)
 ## 安裝環境
 - VM : 
   - 建議使用VMWare，使用Virtual Box有時候會有一些問題
